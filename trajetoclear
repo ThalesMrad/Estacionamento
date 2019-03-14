@@ -2,63 +2,78 @@ int verificaTrajeto(Auto veiculo, int **mapa, Movimento manobra){
   int inicio,final,i,j;
   if( veiculo.direcao == manobra.direcao){          //Se as direções forem iguais, verifica se o
       if( veiculo.direcao == 'X'){                  //caminho que o carro terá de percorrer na linha está livre
-        if(manobra.sinal == '-')
+        if(manobra.sinal == '-'){                   //se não estiver livre, retorna 3 para colisão com outro veículo
           inicio = veiculo.x-2;
-        else
-          inicio = veiculo.x + veiculo.tamanho - 2;                        //se não estiver livre, retorna 0, houve colisão
-        final = veiculo.x-1 + manobra.amplitude;
+          final = veiculo.x-1 + manobra.amplitude;
+        }else{
+          inicio = veiculo.x-1 + veiculo.tamanho;
+          final = veiculo.x-1 + manobra.amplitude + veiculo.tamanho-1;
+      }
+        //printf("\n inicio:%d, final:%d",inicio,final);
       }
       else if( veiculo.direcao == 'Y'){
-        if(manobra.sinal == '-')
+        if(manobra.sinal == '-'){
           inicio = veiculo.y-2;
-        else
-          inicio = veiculo.y + veiculo.tamanho - 2;
-        final = veiculo.y-1 + manobra.amplitude;
+          final = veiculo.y-1 + manobra.amplitude;
+        }else{
+          inicio = veiculo.y-1 + veiculo.tamanho;
+          final = veiculo.y-1 + manobra.amplitude + veiculo.tamanho-1;
+        }
       }
+      //printf("\n inicio:%d, final:%d",inicio,final);
       if( final < inicio ){
-        printf("\n inicio: %d final: %d",inicio,final);
         i = final;
         final = inicio;
         inicio = i;
       }
-      printf("\n inicio: %d final: %d",inicio,final);
+      if(verificaColisaoParede(final) == 0)  // Se a manobra tentar avançar além da parede, retorna 2
+        return 2;
       if(veiculo.direcao == 'X'){
         for( i=inicio;i<=final;i++){
-          printf("\nmapa:%d\n",mapa[veiculo.y-1][i]);
+          //printf("\n MAPA: %d x:%d y:%d inicio:%d final:%d\n",mapa[i][j],i,veiculo.y,inicio,final);
           if(mapa[veiculo.y-1][i] == 1)
-            return 0;
+            return 3;
         }
       }else{
         for( i=inicio;i<=final;i++){
+          //printf("\n MAPA: %d x:%d y:%d inicio:%d final:%d\n",mapa[i][j],veiculo.x,i,inicio,final);
           if(mapa[i][veiculo.x-1] == 1)
-            return 0;
+            return 3;
         }
       }
   }else{
-    if(veiculo.direcao == 'X' && manobra.direcao == 'Y'){        //Se a direção do veiculo for X, a da manobra será Y
+    if(veiculo.direcao == 'X'){   //Se a direção do veiculo for X, a da manobra será Y
       if(manobra.sinal == '-')
-      inicio = veiculo.y-2;
+        inicio = veiculo.y-2;
       else
-      inicio = veiculo.y;
+        inicio = veiculo.y;
       final = veiculo.y-1 + manobra.amplitude;
+
       if ( final < inicio ){
         i = final;
         final = inicio;
         inicio = i;
       }
+
+      if(verificaColisaoParede(final) == 0)
+        return 2;
+
       for(i=veiculo.x-1;i<=veiculo.x+veiculo.tamanho-2;i++){
         for(j=inicio;j<=final;j++){
           if(mapa[j][i] == 1)
-            return 0;
+            return 3;
         }
       }
-    }else if(veiculo.direcao == 'Y' && manobra.direcao == 'X'){
+    }else if(veiculo.direcao == 'Y'){
       if(manobra.sinal == '-')
-        inicio = veiculo.x-2;               //Acrescenta 1 do normal para não encontrar o proprio veiculo
+        inicio = veiculo.x-2;
       else
         inicio = veiculo.x;
-
       final = veiculo.x-1 + manobra.amplitude;
+
+      if(verificaColisaoParede(final) == 0)
+        return 2;
+
       if ( final < inicio ){
         i = final;
         final = inicio;
@@ -74,7 +89,7 @@ int verificaTrajeto(Auto veiculo, int **mapa, Movimento manobra){
         for(j=inicio;j<=final;j++){
           //printf("\nMapa:%d x:%d y:%d\n",mapa[i][j],j,i);
           if (mapa[i][j] == 1)
-            return 0;
+            return 3;
         }
       }
     }
