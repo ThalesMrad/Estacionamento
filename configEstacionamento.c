@@ -16,6 +16,10 @@ int** criaMapa(){
 
 int verificaEspacoMapa(Auto veiculo, int **mapa){
   if (veiculo.direcao == 'X'){
+    if (veiculo.tamanho == TRUCK && veiculo.x > 4)
+      return 0;
+    else if (veiculo.tamanho == CAR && veiculo.x > 5)
+      return 0;
     if (mapa[veiculo.y-1][veiculo.x-1] == 0 && mapa[veiculo.y-1][veiculo.x] == 0){
       if (veiculo.tamanho == TRUCK && mapa[veiculo.y-1][veiculo.x+1] == 0)
         return 1;
@@ -26,6 +30,10 @@ int verificaEspacoMapa(Auto veiculo, int **mapa){
     return 0;
   }
   else if (veiculo.direcao == 'Y'){
+    if (veiculo.tamanho == TRUCK && veiculo.y > 4)
+      return 0;
+    else if (veiculo.tamanho == CAR && veiculo.y > 5)
+      return 0;
     if (mapa[veiculo.y-1][veiculo.x-1] == 0 && mapa[veiculo.y][veiculo.x-1] == 0){
       if (veiculo.tamanho == TRUCK && mapa[veiculo.y+1][veiculo.x-1] == 0)
         return 1;
